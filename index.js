@@ -3,9 +3,10 @@ require('dotenv').config();
 const prefix = process.env.PREFIX;
 const ignore_prefix = process.env.IGNORE_PREFIX;
 const memory_limit = process.env.WORD_MEMORY_LIMIT;
+const db_adress = process.env.DB_ADRESS;
 
 const Keyv = require('keyv');
-const data = new Keyv();    //('mysql://user:pass@localhost:3306/dbname');
+const data = new Keyv(db_adress);
 
 const fs = require('fs');
 
@@ -116,7 +117,9 @@ function lastChar(word) {
 	var test_chars = ['cs', 'dz', 'ly', 'ny', 'sz', 'ty', 'zs'];
 	var chars = [];
 	if (test_chars.includes(word.slice(-2))) chars.push(word.slice(-2));
-	if (word.slice(-3) === 'dzs') chars.push('dzs');
+	if (word.lenght > 3) {
+		if (word.slice(-3) === 'dzs') chars.push('dzs');
+	}
 	if (word.slice(-2) === 'ly') chars.push('j');
 	chars.push(word.slice(-1));
 
