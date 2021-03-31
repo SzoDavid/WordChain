@@ -23,6 +23,7 @@
   "homepage": "https://github.com/SzoDavid/WordChain#readme",
   "dependencies": {
     "discord.js": "^12.5.1",
-    "dotenv": "^8.2.0"
+    "dotenv": "^8.2.0",
+    "keyv": "^4.0.3"
   }
 }
