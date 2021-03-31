@@ -1,0 +1,29 @@
+{
+  "name": "wordchain",
+  "version": "1.0.0",
+  "description": "Wordchain game bot for discord",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SzoDavid/WordChain.git"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "wordchain"
+  ],
+  "author": "David Szobonya",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SzoDavid/WordChain/issues"
+  },
+  "homepage": "https://github.com/SzoDavid/WordChain#readme",
+  "dependencies": {
+    "discord.js": "^12.5.1",
+    "dotenv": "^8.2.0",
+    "keyv": "^4.0.3"
+  }
+}
