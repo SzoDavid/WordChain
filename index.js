@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 require('dotenv').config();
 
 const prefix = process.env.PREFIX;
@@ -29,7 +31,8 @@ client.login(process.env.BOT_TOKEN);
 /* EVENT HANDLERS */
 
 client.on('ready', async () => {
-    await data.set('status', 'ready');
+	const status = await data.get('status');
+	if (status === undefined) await data.set('status', 'ready');
     console.log("Bot is ready!");
 });
 
@@ -82,15 +85,23 @@ client.on('message', async msg => {
 		var words = await data.get('words')
 
 		// incorrect word
-		if (!testFisrtChar(word, first) || words.includes(word)) {
+		const firstCharCorrect = testFisrtChar(word, first);
+		const repeatedWord = words.includes(word);
+
+		if (!firstCharCorrect || repeatedWord) {
 			var mistakes = await data.get('mistakes');
 			mistakes++;
 			await data.set('mistakes', mistakes);
 			msg.react('❌');
 
-			if (mistakes < 3) msg.reply('You have ' + (3 - mistakes) +  ' tries left');
+			var error_msg = '';
+			if (repeatedWord) error_msg += 'you can\'t use a word multiple times! ';
+			else error_msg += 'your word does not start with the correct character! ';
+
+			if (mistakes == 1) msg.reply(error_msg + 'Try again!');
+			else if (mistakes == 2) msg.reply(error_msg + 'This is the last chance to get it right!');
 			else {
-				msg.reply('You ruined it at '+ strike +'!');
+				msg.reply(error_msg + 'You ruined it at '+ strike +'!');
 				client.commands.get('start').execute(data, msg, undefined);
 			}
 			return;
