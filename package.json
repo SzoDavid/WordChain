@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/SzoDavid/WordChain#readme",
   "dependencies": {
+    "@keyv/mysql": "^1.1.4",
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
     "keyv": "^4.0.3"

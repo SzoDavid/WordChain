@@ -3,9 +3,10 @@ require('dotenv').config();
 const prefix = process.env.PREFIX;
 const ignore_prefix = process.env.IGNORE_PREFIX;
 const memory_limit = process.env.WORD_MEMORY_LIMIT;
+const db_adress = process.env.DB_ADRESS;
 
 const Keyv = require('keyv');
-const data = new Keyv();    //('mysql://user:pass@localhost:3306/dbname');
+const data = new Keyv(db_adress);
 
 const fs = require('fs');
 
@@ -65,7 +66,7 @@ client.on('message', async msg => {
 		const word = formatString(msg.content);
 		if (word === '') return;
 
-		await data.set('next', word.charAt(word.length-1));
+		await data.set('next', lastChar(word));
 		await data.set('status', 'in progress');
 		await data.set('strike', '1');
 		await data.set('words', [word]);
@@ -81,7 +82,7 @@ client.on('message', async msg => {
 		var words = await data.get('words')
 
 		// incorrect word
-		if (word.charAt(0) != first || words.includes(word)) {
+		if (!testFisrtChar(word, first) || words.includes(word)) {
 			var mistakes = await data.get('mistakes');
 			mistakes++;
 			await data.set('mistakes', mistakes);
@@ -96,7 +97,7 @@ client.on('message', async msg => {
 		}
 
 		// correct
-		await data.set('next', word.charAt(word.length-1));
+		await data.set('next', lastChar(word));
 		await data.set('mistakes', 0)
 		await data.set('strike', ++strike);
 
@@ -111,6 +112,23 @@ client.on('message', async msg => {
 });
 
 /* FUNCTIONS */
+
+function lastChar(word) {
+	var test_chars = ['cs', 'dz', 'ly', 'ny', 'sz', 'ty', 'zs'];
+	var chars = [];
+	if (test_chars.includes(word.slice(-2))) chars.push(word.slice(-2));
+	if (word.lenght > 3) {
+		if (word.slice(-3) === 'dzs') chars.push('dzs');
+	}
+	if (word.slice(-2) === 'ly') chars.push('j');
+	chars.push(word.slice(-1));
+
+	return chars;
+}
+
+function testFisrtChar(word, chars) {
+	return (chars.includes(word.charAt(0)) || chars.includes(word.slice(0, 2)) || chars.includes(word.slice(0, 3)));
+}
 
 function formatString(str) {
 	return str.replace(/ *\([^)]*\) */g, "").trim().toLowerCase();
