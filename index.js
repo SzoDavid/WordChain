@@ -95,13 +95,13 @@ client.on('message', async msg => {
 			msg.react('❌');
 
 			var error_msg = '';
-			if (repeatedWord) error_msg += 'you can\'t use a word multiple times! ';
+			if (repeatedWord) error_msg += 'you can\'t use one word multiple times! ';
 			else error_msg += 'your word does not start with the correct character! ';
 
 			if (mistakes == 1) msg.reply(error_msg + 'Try again!');
 			else if (mistakes == 2) msg.reply(error_msg + 'This is the last chance to get it right!');
 			else {
-				msg.reply(error_msg + 'You ruined it at '+ strike +'!');
+				msg.reply(error_msg + 'You ruined it at '+ strike +'! :person_facepalming:');
 				client.commands.get('start').execute(data, msg, undefined);
 			}
 			return;
@@ -109,8 +109,11 @@ client.on('message', async msg => {
 
 		// correct
 		await data.set('next', lastChar(word));
-		await data.set('mistakes', 0)
+		await data.set('mistakes', 0);
 		await data.set('strike', ++strike);
+
+		// Celebrate every 50 word
+		if (strike % 50 === 0) msg.channel.send('🎉 Woohoo! This is the ' + strike + '. word! 🎉');
 
 		// remember word
 		words.push(word);
