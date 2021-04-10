@@ -99,7 +99,6 @@ client.on('message', async msg => {
 			else error_msg += 'your word does not start with the correct character! ';
 
 			if (mistakes == 1) msg.reply(error_msg + 'Try again!');
-			else if (mistakes == 2) msg.reply(error_msg + 'This is the last chance to get it right!');
 			else {
 				msg.reply(error_msg + 'You ruined it at '+ strike +'! :person_facepalming:');
 				client.commands.get('start').execute(data, msg, undefined);
@@ -128,7 +127,7 @@ client.on('message', async msg => {
 /* FUNCTIONS */
 
 function lastChar(word) {
-	var test_chars = ['cs', 'dz', 'ly', 'ny', 'sz', 'ty', 'zs'];
+	var test_chars = ['cs', 'dz', 'gy', 'ly', 'ny', 'sz', 'ty', 'zs'];
 	var chars = [];
 	if (test_chars.includes(word.slice(-2))) chars.push(word.slice(-2));
 	if (word.lenght > 3) {
@@ -145,5 +144,5 @@ function testFisrtChar(word, chars) {
 }
 
 function formatString(str) {
-	return str.replace(/ *\([^)]*\) */g, "").trim().toLowerCase();
+	return str.replace(/ *\([^)]*\) */g, '').replace('.','').trim().toLowerCase();
 }
