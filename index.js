@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 require('dotenv').config();
 
 const prefix = process.env.PREFIX;
@@ -29,7 +31,8 @@ client.login(process.env.BOT_TOKEN);
 /* EVENT HANDLERS */
 
 client.on('ready', async () => {
-    await data.set('status', 'ready');
+	const status = await data.get('status');
+	if (status === undefined) await data.set('status', 'ready');
     console.log("Bot is ready!");
 });
 
@@ -75,6 +78,7 @@ client.on('message', async msg => {
 	}
 	if (status === 'in progress') {
 		const word = formatString(msg.content);
+		console.log('Formatted: ' + word);
 		if (word === '') return;
 
 		const first = await data.get('next');
@@ -82,24 +86,35 @@ client.on('message', async msg => {
 		var words = await data.get('words')
 
 		// incorrect word
-		if (!testFisrtChar(word, first) || words.includes(word)) {
+		const firstCharCorrect = testFisrtChar(word, first);
+		const repeatedWord = words.includes(word);
+
+		if (!firstCharCorrect || repeatedWord || word.includes(' ')) {
 			var mistakes = await data.get('mistakes');
 			mistakes++;
 			await data.set('mistakes', mistakes);
 			msg.react('❌');
 
-			if (mistakes < 3) msg.reply('You have ' + (3 - mistakes) +  ' tries left');
+			var error_msg = '';
+			if (repeatedWord) error_msg += 'you can\'t use one word multiple times! ';
+			else if (!firstCharCorrect) error_msg += 'your word does not start with the correct character! ';
+			else error_msg += 'this is word chain not words chain, you should write one word only! ';
+
+			if (mistakes == 1) msg.reply(error_msg + 'Try again!');
 			else {
-				msg.reply('You ruined it at '+ strike +'!');
-				client.commands.get('start').execute(data, msg, undefined);
+				msg.reply(error_msg + 'You ruined it at '+ strike +'! :person_facepalming:');
+				client.commands.get('start').execute(data, msg, 'reset');
 			}
 			return;
 		}
 
 		// correct
 		await data.set('next', lastChar(word));
-		await data.set('mistakes', 0)
+		await data.set('mistakes', 0);
 		await data.set('strike', ++strike);
+
+		// Celebrate every 50 word
+		if (strike % 50 === 0) msg.channel.send('🎉 Woohoo! This is the ' + strike + '. word! 🎉\n');
 
 		// remember word
 		words.push(word);
@@ -114,7 +129,7 @@ client.on('message', async msg => {
 /* FUNCTIONS */
 
 function lastChar(word) {
-	var test_chars = ['cs', 'dz', 'ly', 'ny', 'sz', 'ty', 'zs'];
+	var test_chars = ['cs', 'dz', 'gy', 'ly', 'ny', 'sz', 'ty', 'zs'];
 	var chars = [];
 	if (test_chars.includes(word.slice(-2))) chars.push(word.slice(-2));
 	if (word.lenght > 3) {
@@ -131,5 +146,5 @@ function testFisrtChar(word, chars) {
 }
 
 function formatString(str) {
-	return str.replace(/ *\([^)]*\) */g, "").trim().toLowerCase();
+	return str.replace(/ *\([^)]*\) */g, '').replace(/ *\<[^)]*\> */g, '').replace('.','').trim().toLowerCase();
 }

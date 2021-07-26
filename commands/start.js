@@ -1,7 +1,7 @@
 module.exports = {
 	name: 'start',
 	async execute(data, message, args) {
-		if (!message.member.hasPermission("ADMINISTRATOR")) {
+		if (!message.member.hasPermission("ADMINISTRATOR") && args != 'reset') {
 			message.reply('Only admins can use this command!');
 			return;
 		}
