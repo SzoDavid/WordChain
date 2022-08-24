@@ -12,7 +12,7 @@ module.exports = {
 			.setDescription('This bot currently uses very few commands, which can change.')
 			.addFields(
 				{ name: '/set_channel', value: '`/set_channel`: [*] This command adds the channel to the list of channels where the bot will operate on. Requires administrator privileges.' },
-
+				{ name: '/status', value: '`/status`: Replies with status informations about the bot.' },
               // TODO: Put newer commands here.
 				{ name: 'Source Code', value: '[GitHub](https://github.com/SzoDavid/WordChain)' },
 			);
