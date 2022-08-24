@@ -11,11 +11,48 @@ const memory_limit = process.env.WORD_MEMORY_LIMIT;
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
-const sequelize = new Sequelize({
+client.sequelize = new Sequelize({
 	dialect: 'sqlite',
 	storage: 'database.sqlite',
 	logging: (...msg) => console.log(msg),
 });
+
+client.sequelize.define('Channel', {
+	id: {
+		type: Sequelize.STRING,
+		primaryKey: true,
+	},
+	highscore: {
+		type: Sequelize.INTEGER,
+		defaultValue: 0,
+		allowNull: false,
+	},
+	mistakes: {
+		type: Sequelize.INTEGER,
+		defaultValue: 0,
+		allowNull: false,
+	},
+});
+
+client.sequelize.define('Word', {
+	id: {
+		type: Sequelize.INTEGER,
+		autoIncrement: true,
+		primaryKey: true,
+	},
+	word: {
+		type: Sequelize.STRING,
+		allowNull: false,
+	},
+	channel: {
+		type: Sequelize.STRING,
+		allowNull: false,
+	},
+	author: {
+		type: Sequelize.STRING,
+		allowNull: false,
+	}
+})
 
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -33,9 +70,11 @@ client.login(process.env.BOT_TOKEN);
 /* EVENT HANDLERS */
 
 client.on('ready', async () => {
+	await client.sequelize.models.Word.sync();
+	await client.sequelize.models.Channel.sync();
     console.log('Bot is ready!');
 	try {
-		await sequelize.authenticate();
+		await client.sequelize.authenticate();
 		console.log('Database connection has been established successfully.');
 	} catch (error) {
 		console.error('Unable to connect to the database:', error);
