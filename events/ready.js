@@ -13,5 +13,7 @@ module.exports = {
         } catch (error) {
             console.error(`[${new Date(Date.now()).toISOString()}] Unable to connect to the database:\n`, error);
         }
+
+        client.user.setPresence({ activities: [{ name: '/help', type: 2 }], status: 'online' });
     },
 };
