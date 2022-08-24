@@ -2,6 +2,7 @@
 
 require('dotenv').config();
 const fs = require('fs');
+const path = require('node:path');
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
 
 const prefix = process.env.PREFIX;
@@ -12,33 +13,35 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 
 require('./dbConfig').config(client);
 
+// Command handler
+/* TODO: Uncomment after all commands has been converted to slash commands
 client.commands = new Collection();
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const commandsPath = path.join(__dirname, 'commands');
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
-	const command = require(`./commands/${file}`);
+	const filePath = path.join(commandsPath, file);
+	const command = require(filePath);
+	client.commands.set(command.data.name, command);
+}*/
 
-	// set a new item in the Collection
-	// with the key as the command name and the value as the exported module
-	client.commands.set(command.name, command);
+// Event handler
+const eventsPath = path.join(__dirname, 'events');
+const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
+
+for (const file of eventFiles) {
+	const filePath = path.join(eventsPath, file);
+	const event = require(filePath);
+	if (event.once) {
+		client.once(event.name, (...args) => event.execute(client, ...args));
+	} else {
+		client.on(event.name, (...args) => event.execute(client, ...args));
+	}
 }
 
 client.login(process.env.BOT_TOKEN);
 
-/* EVENT HANDLERS */
-
-client.on('ready', async () => {
-	await client.sequelize.models.Word.sync();
-	await client.sequelize.models.Channel.sync();
-    console.log('Bot is ready!');
-	try {
-		await client.sequelize.authenticate();
-		console.log('Database connection has been established successfully.');
-	} catch (error) {
-		console.error('Unable to connect to the database:', error);
-	}
-});
-
+/*
 client.on('message', async msg => {
     const channel = await data.get('channel');
 
@@ -129,8 +132,6 @@ client.on('message', async msg => {
 
 });
 
-/* FUNCTIONS */
-
 function lastChar(word) {
 	var test_chars = ['cs', 'dz', 'gy', 'ly', 'ny', 'sz', 'ty', 'zs'];
 	var chars = [];
@@ -148,6 +149,9 @@ function testFisrtChar(word, chars) {
 	return (chars.includes(word.charAt(0)) || chars.includes(word.slice(0, 2)) || chars.includes(word.slice(0, 3)));
 }
 
-function formatString(str) {
-	return str.replace(/ *\([^)]*\) */g, '').replace(/ *\<[^)]*\> */g, '').replace('.','').trim().toLowerCase();
-}
+*/
+
+//function formatString(str) {
+//	return str.replace(/ *\([^)]*\) */g, '').replace(/ *\<[^)]*\> */g, '').replace('.','').trim().toLowerCase();
+//}
+
