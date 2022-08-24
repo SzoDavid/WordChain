@@ -24,6 +24,19 @@ function config(client) {
             defaultValue: 0,
             allowNull: false,
         },
+        mistakesAllowed: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+        },
+        nextchars: {
+            type: Sequelize.STRING,
+            defaultValue: '[]',
+            allowNull: false,
+        },
+        server: {
+            type: Sequelize.STRING,
+            allowNull: false,
+        }
     });
     
     client.sequelize.define('Word', {
