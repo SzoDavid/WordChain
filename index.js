@@ -1,21 +1,23 @@
 #!/usr/bin/env node
 
 require('dotenv').config();
+const fs = require('fs');
+const Sequelize = require('sequelize');
+const { Client, Collection, GatewayIntentBits } = require('discord.js');
 
 const prefix = process.env.PREFIX;
 const ignore_prefix = process.env.IGNORE_PREFIX;
 const memory_limit = process.env.WORD_MEMORY_LIMIT;
-const db_adress = process.env.DB_ADRESS;
 
-const Keyv = require('keyv');
-const data = new Keyv(db_adress);
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
-const fs = require('fs');
+const sequelize = new Sequelize({
+	dialect: 'sqlite',
+	storage: 'database.sqlite',
+	logging: (...msg) => console.log(msg),
+});
 
-const Discord = require('discord.js');
-const client = new Discord.Client();
-
-client.commands = new Discord.Collection();
+client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
@@ -31,9 +33,13 @@ client.login(process.env.BOT_TOKEN);
 /* EVENT HANDLERS */
 
 client.on('ready', async () => {
-	const status = await data.get('status');
-	if (status === undefined) await data.set('status', 'ready');
-    console.log("Bot is ready!");
+    console.log('Bot is ready!');
+	try {
+		await sequelize.authenticate();
+		console.log('Database connection has been established successfully.');
+	} catch (error) {
+		console.error('Unable to connect to the database:', error);
+	}
 });
 
 client.on('message', async msg => {
