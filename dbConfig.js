@@ -24,6 +24,10 @@ function config(client) {
             defaultValue: 0,
             allowNull: false,
         },
+        mistakesAllowed: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+        },
         nextchars: {
             type: Sequelize.STRING,
             defaultValue: '[]',

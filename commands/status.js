@@ -11,7 +11,7 @@ module.exports = {
 			.setTitle('Status');
 
         let query = await client.sequelize.models.Channel.findAll({
-            attributes: [[client.sequelize.fn('COUNT', client.sequelize.col('id')), 'n_id'],],
+            attributes: [[client.sequelize.fn('COUNT', client.sequelize.col('id')), 'n_id'], 'highscore', 'mistakes', 'mistakesAllowed', 'nextchars'],
             where: {
                 id: interaction.channel.id,
             },
@@ -39,6 +39,31 @@ module.exports = {
             statusEmbed.addFields(
                 { name: 'Number of active channels', value: `${numChannels}` },
                 { name: 'In this server', value: servers },
+            );
+        } else {
+            const query_score = await client.sequelize.models.Word.findAll({
+                attributes: [[client.sequelize.fn('COUNT', client.sequelize.col('id')), 'n_id'],],
+                where: {
+                    channel: interaction.channel.id,
+                },
+            });
+
+            let achars = JSON.parse(query[0].dataValues.nextchars);
+            let chars = '';
+            if (achars.length === 0) {
+                chars = 'Any';
+            } else {
+                achars.forEach(char => {
+                    chars += `${char} `;
+                })
+            }
+            
+            statusEmbed.addFields(
+                { name: 'High score', value: `${query[0].dataValues.highscore}`, inline: true },
+                { name: 'Current score', value: `${query_score[0].dataValues.n_id}`, inline: true },
+                { name: 'Mistakes', value: `${query[0].dataValues.mistakes}` },
+                { name: 'Mistakes allowed', value: `${query[0].dataValues.mistakesAllowed}` },
+                { name: 'Next letter', value: chars },
             );
         }
 
