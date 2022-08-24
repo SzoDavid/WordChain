@@ -1,9 +1,22 @@
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+
 module.exports = {
-	name: 'help',
-	execute(data, message, args) {
-		message.channel.send('**Commands:**\n*wc!help*\n*wc!status*\n*wc!start* [admin only]\n*wc!reset_channel* [admin only]\n\n' +
-            '**Gameplay:**\nBasic word chain. Start game with *wc!start*. Words between brackets and messages starting with \"//\" will be ignored.\n' +
-			'Where you start the game first time, that will be the only channel where the bot will work. Use *wc!reset_channel* to be able to choose a new channel.\n\n' +
-			'**Source:**\nhttps://github.com/SzoDavid/WordChain');
+	data: new SlashCommandBuilder()
+		.setName('help')
+		.setDescription('Replies with informations about the bot.')
+		.setDMPermission(false),
+	async execute(interaction) {
+		const aboutEmbed = new EmbedBuilder()
+			.setColor(0xFF0099)
+			.setTitle('Help')
+			.setDescription('This bot currently uses very few commands, which can change.')
+			.addFields(
+				{ name: '/set_channel', value: '`/set_channel`: [*] This command adds the channel to the list of channels where the bot will operate on. Requires administrator privileges.' },
+
+              // TODO: Put newer commands here.
+				{ name: 'Source Code', value: '[GitHub](https://github.com/SzoDavid/WordChain)' },
+			);
+
+		await interaction.reply({ embeds: [aboutEmbed] });
 	},
-};
+}
