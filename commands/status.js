@@ -7,7 +7,7 @@ module.exports = {
 		.setDMPermission(false),
 	async execute(interaction, client) {
 		const statusEmbed = new EmbedBuilder()
-			.setColor(0xFF0099)
+			.setColor(0xed1c24)
 			.setTitle('Status');
 
         let query = await client.sequelize.models.Channel.findAll({

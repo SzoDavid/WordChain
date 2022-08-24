@@ -7,7 +7,7 @@ module.exports = {
 		.setDMPermission(false),
 	async execute(interaction) {
 		const aboutEmbed = new EmbedBuilder()
-			.setColor(0xFF0099)
+			.setColor(0xed1c24)
 			.setTitle('Help')
 			.setDescription('This bot currently uses very few commands, which can change.')
 			.addFields(
