@@ -1,20 +1,4 @@
-module.exports = { OnStart };
-
-// ENVENTS
-
-function OnStart() {
-    // TODO
-}
-
-function OnEnd() {
-    // TODO
-}
-
-function OnMessage() {
-    // TODO
-}
-
-// PRIVATE FUNCTIONS
+module.exports = { lastChar, testFisrtChar, formatString };
 
 function lastChar(word) {
 	var test_chars = ['cs', 'dz', 'gy', 'ly', 'ny', 'sz', 'ty', 'zs'];

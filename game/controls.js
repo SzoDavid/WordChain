@@ -1,4 +1,4 @@
-module.exports = { Remove, Create, Update }
+module.exports = { Remove, Create, Update };
 
 function Remove() {
     // TODO
@@ -8,7 +8,7 @@ function Create() {
     // TODO
 }
 
-function Update(channelId, mistakesAllowed, client) {
+async function Update(channelId, mistakesAllowed, client) {
 	try {
 		await client.sequelize.models.Channel.update({ mistakesAllowed: mistakesAllowed }, {
 			where: {

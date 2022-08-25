@@ -11,7 +11,7 @@ const memory_limit = process.env.WORD_MEMORY_LIMIT;
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
-require('./dbConfig').config(client);
+require('./database/config').config('database.sqlite', client);
 
 // Command handler
 client.commands = new Collection();

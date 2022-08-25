@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
-const gamecontrol = require('../gamecontrol');
+const gamecontrol = require('../game/controls');
 
 module.exports = {
 	data: new SlashCommandBuilder()
