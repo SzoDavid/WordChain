@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
+const gamecontrol = require('../gamecontrol');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -11,22 +12,20 @@ module.exports = {
 				.setDescription('Number of mistakes allowed')
 				.setRequired(true)),
 	async execute(interaction, client) {
-        try {
-            const res = await client.sequelize.models.Channel.update({ mistakesAllowed: interaction.options.getInteger('mistakes_allowed') }, {
-                where: {
-                    id: interaction.channel.id,
-                }
-            });
+        const query = await client.sequelize.models.Channel.findOne({
+            attributes: [[client.sequelize.fn('COUNT', client.sequelize.col('id')), 'n_id'],]
+        });
 
-            if (res[0] === 0) {
-                await interaction.reply({ content: 'This channel is not connected with the WordChain bot.', ephemeral: true });
-                return;
-            }
-
-            await interaction.reply({ content: 'Channel is updated successfully!', ephemeral: true });
-        } catch (error) {
-            console.error(error);
-            await interaction.reply({ content: 'Couldn\'t update channel :c', ephemeral: true });
+        if (query.dataValues.n_id === 0) {
+            await interaction.reply({ content: 'This channel is not connected with the WordChain bot.', ephemeral: true });
+            return;
         }
+
+        if (!gamecontrol.Update(interaction.channel.id, interaction.options.getInteger('mistakes_allowed'), client)) {
+            await interaction.reply({ content: 'Couldn\'t update channel :c', ephemeral: true });
+            return;
+        }
+
+        await interaction.reply({ content: 'Channel is updated successfully!', ephemeral: true });
 	},
 }

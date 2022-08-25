@@ -1,22 +1,16 @@
-module.exports = { OnEnd, OnRemove, OnUpdate, OnStart, OnCreate };
+module.exports = { OnStart };
 
-function OnEnd() {
-    // TODO
-}
-
-function OnRemove() {
-    // TODO
-}
-
-function OnUpdate() {
-    // TODO
-}
+// ENVENTS
 
 function OnStart() {
     // TODO
 }
 
-function OnCreate() {
+function OnEnd() {
+    // TODO
+}
+
+function OnMessage() {
     // TODO
 }
 
