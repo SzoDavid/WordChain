@@ -1,6 +1,7 @@
 module.exports = { Remove, Create, Update };
 
 function Remove() {
+	return false;
     // TODO
 }
 
