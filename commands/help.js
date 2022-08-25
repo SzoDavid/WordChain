@@ -13,7 +13,8 @@ module.exports = {
 			.addFields(
 				{ name: 'Commands', value: '`/status`: Replies with status informations about the bot.'},
 				{ name: 'Admin only commands', value: '`/set_channel`: This command adds the channel to the list of channels where the bot will operate on.\n' +
-					'`/update_channel`: Update the maximum number of mistakes in a row allowed in the channel.' },
+					'`/update_channel`: Update the maximum number of mistakes in a row allowed in the channel.\n' +
+					'`/remove_channel`: Stop using the current channel.' },
               // TODO: Put newer commands here.
 				{ name: 'Source Code', value: '[GitHub](https://github.com/SzoDavid/WordChain)' },
 			);
