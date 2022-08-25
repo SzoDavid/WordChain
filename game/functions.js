@@ -1,26 +1,4 @@
-module.exports = { OnEnd, OnRemove, OnUpdate, OnStart, OnCreate };
-
-function OnEnd() {
-    // TODO
-}
-
-function OnRemove() {
-    // TODO
-}
-
-function OnUpdate() {
-    // TODO
-}
-
-function OnStart() {
-    // TODO
-}
-
-function OnCreate() {
-    // TODO
-}
-
-// PRIVATE FUNCTIONS
+module.exports = { lastChar, testFisrtChar, formatString };
 
 function lastChar(word) {
 	var test_chars = ['cs', 'dz', 'gy', 'ly', 'ny', 'sz', 'ty', 'zs'];
