@@ -13,10 +13,12 @@ module.exports = {
 				.setRequired(true)),
 	async execute(interaction, client) {
         const query = await client.sequelize.models.Channel.findOne({
-            attributes: [[client.sequelize.fn('COUNT', client.sequelize.col('id')), 'n_id'],]
+            where: {
+                id: interaction.channel.id,
+            },
         });
 
-        if (query.dataValues.n_id === 0) {
+        if (!query) {
             await interaction.reply({ content: 'This channel is not connected with the WordChain bot.', ephemeral: true });
             return;
         }
