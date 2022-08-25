@@ -1,10 +1,10 @@
 module.exports = { GetBotStatus, GetChannelStatus };
 
 async function GetBotStatus(serverId, client) {
-    let query = await client.sequelize.models.Channel.findAll({
+    let query = await client.sequelize.models.Channel.findOne({
         attributes: [[client.sequelize.fn('COUNT', client.sequelize.col('id')), 'n_id'],]
     });
-    const numChannels = query[0].dataValues.n_id;
+    const numChannels = query.dataValues.n_id;
 
     query = await client.sequelize.models.Channel.findAll({
         attributes: ['id'],
