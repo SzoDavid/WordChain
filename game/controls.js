@@ -2,9 +2,21 @@ const gameEvents = require('./events');
 
 module.exports = { Remove, Create, Update };
 
-function Remove() {
-	return false;
-    // TODO
+async function Remove(channelId, client) {
+	try {
+		await client.sequelize.models.Channel.destroy({
+			where: {
+				id: channelId,
+			},
+		});
+
+		client.collectors.get(channelId).stop();
+		client.collectors.delete(channelId);
+
+	} catch (error) {
+		console.error(error);
+		return false;
+	}
 }
 
 async function Create(interaction, client) {
