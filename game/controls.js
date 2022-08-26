@@ -5,8 +5,18 @@ function Remove() {
     // TODO
 }
 
-function Create() {
-    // TODO
+async function Create(interaction, client) {
+    try {
+		await client.sequelize.models.Channel.create({ 
+			mistakesAllowed: interaction.options.getInteger('mistakes_allowed'),
+			id: interaction.channel.id,
+			server: interaction.guild.id
+		});
+		return true;
+	} catch (error) {
+		console.error(error);
+		return false;
+	}
 }
 
 async function Update(channelId, mistakesAllowed, client) {
