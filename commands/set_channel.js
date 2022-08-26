@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField, Client, EmbedBuilder } = require('discord.js');
 const gamecontrol = require('../game/controls');
 
 module.exports = {
@@ -18,13 +18,29 @@ module.exports = {
             },
         });
         
-        // TODO: Check if the bot can access the channel or not.
-        
         if (query) {
             await interaction.reply({ content: 'This channel is already set as the channel', ephemeral: true });
             return;
         }
-
+        
+        try {
+            const startEmbed = new EmbedBuilder()
+			.setColor(0xed1c24) // TODO: Change to different color.
+			.setTitle('Start')
+            .setDescription('You can now use the WordChain bot in this channel.')
+            .addFields(
+				{ name: 'What is word chain', value: 'Word chain is a word game in which players come up with words that begin with the letter or letters that the previous word ended with.'},
+				{ name: 'About word chain:', value: '[Wikipedia](https://en.wikipedia.org/wiki/Word_chain)'},
+				{ name: 'Source Code', value: '[GitHub](https://github.com/SzoDavid/WordChain)', inline: true },
+                { name: 'Submit issues', value: '[GitHub](https://github.com/SzoDavid/WordChain/issues/new)', inline: true }
+			);
+            await client.channels.cache.get(interaction.channel.id).send( { embeds: [startEmbed]});
+        } catch (error) {
+            await interaction.reply({ content: 'Couldn\'t set as channel (Most likely a permission issue) :c ', ephemeral: true });
+            console.error(error);
+            return;
+        }
+        
         if (!gamecontrol.Create(interaction, client)) {
             await interaction.reply({ content: 'Couldn\'t set as channel :c', ephemeral: true });
             return;
