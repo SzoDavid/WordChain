@@ -13,6 +13,7 @@ async function Remove(channelId, client) {
 		client.collectors.get(channelId).stop();
 		client.collectors.delete(channelId);
 
+		return true;
 	} catch (error) {
 		console.error(error);
 		return false;
