@@ -4,6 +4,16 @@ const { EmbedBuilder } = require('discord.js');
 module.exports = { OnStart };
 
 async function OnStart(channel, client) {
+    const query = await client.sequelize.models.Channel.findOne({
+        where: {
+            id: channel.id,
+        },
+    });
+
+    if (!query) {
+        return;
+    }
+
     const filter = m => !(m.author.bot || m.content.startsWith(process.env.IGNORE_PREFIX));
     client.collectors.set(channel.id, channel.createMessageCollector({ filter }));
 
@@ -16,12 +26,6 @@ async function OnStart(channel, client) {
 	collector.on('end', collected => {
 		OnEnd(collected, client);
 	});
-
-    const query = await client.sequelize.models.Channel.findOne({
-        where: {
-            id: channel.id,
-        },
-    });
 
     const startEmbed = new EmbedBuilder()
 		.setColor(0xed1c24)
