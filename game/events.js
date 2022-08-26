@@ -27,8 +27,8 @@ async function OnStart(channel, client) {
 		.setColor(0xed1c24)
 		.setTitle(`Ready, set, WordChain!`);
 
-    if (query.dataValues.highscore !== 0) {
-        startEmbed.setDescription(`Write a word wich starts with the letter the previous word ends with! Messages starting with \`${process.env.IGNORE_PREFIX}\` will be ignored. Have fun!`);
+    if (query.dataValues.highscore === 0) {
+        startEmbed.setDescription(`The game has started! Messages starting with \`${process.env.IGNORE_PREFIX}\` will be ignored. Have fun!`);
     } else {
         startEmbed.setDescription(`The high score in this channel is ${query.dataValues.highscore}. Break it!`);
     }
