@@ -1,3 +1,5 @@
+const gameEvents = require('./events');
+
 module.exports = { Remove, Create, Update };
 
 function Remove() {
@@ -12,6 +14,9 @@ async function Create(interaction, client) {
 			id: interaction.channel.id,
 			server: interaction.guild.id
 		});
+
+		gameEvents.OnStart(interaction.channel, client);
+
 		return true;
 	} catch (error) {
 		console.error(error);

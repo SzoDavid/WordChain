@@ -13,6 +13,8 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 
 require('./database/config').config('database.sqlite', client);
 
+client.collectors = new Collection();
+
 // Command handler
 client.commands = new Collection();
 const commandsPath = path.join(__dirname, 'commands');
