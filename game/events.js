@@ -27,11 +27,14 @@ async function OnStart(channel, client) {
         collector.on('end', collected => {
             OnEnd(collected, client);
         });
-    } catch (e) {
+    } catch (error) {
+        console.log(error);
+
         const errorEmbed = new EmbedBuilder()
-        .setColor(0xed1c24)
-        .setTitle(`Error`)
-        .setDescription('There is an error, the bot won\'t work.'); // TODO: Make a more descriptive error message.
+            .setColor(0xed1c24)
+            .setTitle(`Error`)
+            .setDescription('Oops, something unexpected happened! Ask a moderator to restart the game!');
+        
         await channel.send({ embeds: [errorEmbed] });
     }
 }
