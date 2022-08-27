@@ -25,9 +25,9 @@ module.exports = {
         
         try {
             const startEmbed = new EmbedBuilder()
-			.setColor(0xed1c24) // TODO: Change to different color.
-			.setTitle('Start')
-            .setDescription('You can now use the WordChain bot in this channel.')
+			.setColor(0xed1c24)
+			.setTitle('Ready, set, WordChain!')
+            .setDescription(`The game has started! Messages starting with \`${process.env.IGNORE_PREFIX}\` will be ignored. Have fun!`)
             .addFields(
 				{ name: 'What is word chain', value: 'Word chain is a word game in which players come up with words that begin with the letter or letters that the previous word ended with.'},
 				{ name: 'About word chain:', value: '[Wikipedia](https://en.wikipedia.org/wiki/Word_chain)'},
