@@ -1,4 +1,5 @@
 require('dotenv').config();
+const gameFunctions = require('./functions');
 const { EmbedBuilder } = require('discord.js');
 
 module.exports = { OnStart };
@@ -44,7 +45,53 @@ function OnEnd(collected, client) {
     // TODO
 }
 
-function OnMessage(message, client) {
-    console.log(message)
-    // TODO
+async function OnMessage(message, client) {
+    try {    
+        const query = await client.sequelize.models.Channel.findOne({
+            where: {
+                id: message.channel.id,
+            },
+        });
+
+        if (process.env.DEBUG === 'false' && message.author.id === query.dataValues.lastAuthor) {
+            message.reply({ content: 'It\'s not your turn!', ephemeral: true })
+            message.react('❌');
+
+            // TODO: increment and test mistakes
+            return;
+        }
+
+        const validationRespone = await gameFunctions.validateWord(message.content, query.dataValues.nextchars, client);
+
+        if (validationRespone.error) {
+            message.reply({ content: validationRespone.message, ephemeral: true })
+            message.react('❌');
+
+            // TODO: increment and test mistakes
+            return;
+        }
+
+        await client.sequelize.models.Channel.update(
+            { 
+                nextchars: validationRespone.chars,
+                lastAuthor: message.author.id,
+            }, 
+            {
+			    where: {
+				    id: message.channel.id,
+			    },
+            }
+        );
+
+        await client.sequelize.models.Word.create({
+            word: validationRespone.message,
+            channel: message.channel.id,
+        });
+
+        message.react('✅');
+    } catch (error) {
+        console.log(error);
+
+        // TODO: Handle error
+    }
 }
