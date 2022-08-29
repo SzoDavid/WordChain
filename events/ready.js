@@ -1,3 +1,5 @@
+const startup = require("../game/startup.js");
+
 module.exports = {
 	name: 'ready',
 	once: true,
@@ -15,5 +17,7 @@ module.exports = {
         }
 
         client.user.setPresence({ activities: [{ name: '/help', type: 2 }], status: 'online' });
+
+        startup.StartUp(client);
     },
 };

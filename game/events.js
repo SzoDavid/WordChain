@@ -20,6 +20,8 @@ async function OnStart(channel, client) {
 
         const collector = client.collectors.get(channel.id);
 
+        console.log(`[${new Date(Date.now()).toISOString()}] Bot now listening to messages in #${channel.name}.`);
+
         collector.on('collect', message => {
             OnMessage(message, client)
         });
