@@ -33,6 +33,11 @@ function config(storage, client) {
             defaultValue: '[]',
             allowNull: false,
         },
+        lastAuthor: {
+            type: Sequelize.STRING,
+            defaultValue: null,
+            allowNull: true,
+        },
         server: {
             type: Sequelize.STRING,
             allowNull: false,
@@ -53,9 +58,5 @@ function config(storage, client) {
             type: Sequelize.STRING,
             allowNull: false,
         },
-        author: {
-            type: Sequelize.STRING,
-            allowNull: false,
-        }
     });    
 }

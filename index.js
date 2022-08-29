@@ -43,33 +43,6 @@ for (const file of eventFiles) {
 client.login(process.env.DISCORD_TOKEN);
 
 /*
-client.on('message', async msg => {
-    const channel = await data.get('channel');
-
-    if (msg.content.startsWith(ignore_prefix) || msg.author.bot || (channel === undefined) === (msg.channel.name === channel)) return;
-
-    console.log(msg.content);
-
-	// commands
-    if (msg.content.startsWith(prefix)) {
-        const args = msg.content.slice(prefix.length).trim().split(/ +/);
-        const command = args.shift().toLowerCase();
-
-        if (!client.commands.has(command)) {
-            msg.reply('Unknown command!')
-            return;
-        }
-
-        try {
-            client.commands.get(command).execute(data, msg, args);
-        } catch (error) {
-            console.error(error);
-            msg.reply('There was an error trying to execute that command!');
-        }
-
-        return;
-    }
-
 	// words
 	const status = await data.get('status')
 	if (status === 'started') {
@@ -131,5 +104,4 @@ client.on('message', async msg => {
 		msg.react('✅');
 	}
 
-});
 */
