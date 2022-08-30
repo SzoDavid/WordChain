@@ -50,9 +50,14 @@ async function OnMessage(message, client) {
 
         if (validationRespone.error) {
             message.reply({ content: validationRespone.message, ephemeral: true })
-            message.react('❌');
 
-            // TODO: increment and test mistakes
+            if (query.dataValues.mistakes === query.dataValues.mistakesAllowed) {
+                await client.collectors.get(message.channel.id).stop();
+                return;
+            }
+            console.log(await client.sequelize.models.Channel.increment({ mistakes: 1}, { where: { id: message.channel.id }}));
+
+            message.react('❌');
             return;
         }
 
@@ -76,7 +81,5 @@ async function OnMessage(message, client) {
         message.react('✅');
     } catch (error) {
         console.log(error);
-
-        // TODO: Handle error
     }
 }
