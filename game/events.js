@@ -4,16 +4,7 @@ const { EmbedBuilder } = require('discord.js');
 module.exports = { OnStart };
 
 async function OnStart(channel, client) {
-    try {    
-        const query = await client.sequelize.models.Channel.findOne({
-            where: {
-                id: channel.id,
-            },
-        });
-
-        if (!query) {
-            return;
-        }
+    try {
 
         const filter = m => !(m.author.bot || m.content.startsWith(process.env.IGNORE_PREFIX));
         client.collectors.set(channel.id, channel.createMessageCollector({ filter }));

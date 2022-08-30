@@ -1,5 +1,4 @@
 const events = require('./events.js');
-const { Client } = require('discord.js');
 
 module.exports = { StartUp };
 
@@ -11,7 +10,22 @@ async function StartUp(client) {
             if(channel) {
                 events.OnStart(channel, client);
             } else {
-                console.log("Channel isn't available (probably because the channel was deleted)."); // TODO: Better managing of this, and probably deleting it from the database.
+                try {
+                    await client.sequelize.models.Channel.destroy({
+                        where: {id: record.dataValues.id}
+                    });
+                    await client.sequelize.models.Word.destroy({
+                        where: {channel: record.dataValues.id}
+                    });
+                    try {
+                        console.log(`Removed non accessible channel with id ${record.dataValues.id} in ${client.guilds.cache.get(record.dataValues.server).name}.`);
+                    } catch(e) {
+                        console.log(`Removed non accessible channel with id ${record.dataValues.id} in non accessible server with id ${record.dataValues.server}.`);
+                    }
+                } catch(e) {
+                    console.error("Error removing deleted channels from database.");
+                    console.error(e);
+                }
             }
         });
     } catch(e) {
