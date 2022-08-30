@@ -46,15 +46,7 @@ async function OnMessage(message, client) {
             },
         });
 
-        if (process.env.DEBUG === 'false' && message.author.id === query.dataValues.lastAuthor) {
-            message.reply({ content: 'It\'s not your turn!', ephemeral: true })
-            message.react('❌');
-
-            // TODO: increment and test mistakes
-            return;
-        }
-
-        const validationRespone = await gameFunctions.validateWord(message.content, query.dataValues.nextchars, client);
+        const validationRespone = await gameFunctions.validateWord(message.content, message.author.id, query.dataValues.nextchars, query.dataValues.lastAuthor, client);
 
         if (validationRespone.error) {
             message.reply({ content: validationRespone.message, ephemeral: true })

@@ -1,7 +1,17 @@
+require('dotenv').config();
+
 module.exports = { validateWord };
 
-async function validateWord(rawWord, rawChars, client) {
+async function validateWord(rawWord, messageAuthor, rawChars, lastAuthor, client) {
 	const word = await formatString(rawWord);
+
+	if (process.env.DEBUG === 'false' && messageAuthor === lastAuthor) {
+		return {
+			error: true,
+			message: 'It\'s not your turn!', 
+			chars: '',
+		};
+	}
 
 	if (await word.includes(' ')) {
 		return {
