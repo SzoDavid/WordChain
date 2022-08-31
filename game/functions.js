@@ -1,4 +1,56 @@
-module.exports = { lastChar, testFisrtChar, formatString };
+require('dotenv').config();
+
+module.exports = { validateWord };
+
+async function validateWord(rawWord, messageAuthor, rawChars, lastAuthor, client) {
+	const word = await formatString(rawWord);
+
+	if (process.env.DEBUG === 'false' && messageAuthor === lastAuthor) {
+		return {
+			error: true,
+			message: 'It\'s not your turn!', 
+			chars: '',
+		};
+	}
+
+	if (await word.includes(' ')) {
+		return {
+			error: true,
+			message: 'Send only a single word please!',
+			chars: '',
+		};
+	}
+
+	if (rawChars !== '[]') {
+		if (!await testFisrtChar(word, await JSON.parse(rawChars))) {
+			return {
+				error: true,
+				message: 'Your word should start with the last letter of the previous word.\n**Note:** Someone might have been a prankster and deleted their word, run `/status` to check what letter\'s next.', 
+				chars: '',
+			}
+		}
+
+		const query = await client.sequelize.models.Word.findAll({
+            where: {
+                word: word,
+            },
+        });
+
+		if (query.length !== 0) {
+			return {
+				error: true,
+				message: 'Someone has already used this word. Be a bit more creative! :wink:', 
+				chars: '',
+			}
+		}
+	}
+
+	return {
+		error: false,
+		message: word,
+		chars: JSON.stringify(lastChar(word)),
+	};
+}
 
 function lastChar(word) {
 	var test_chars = ['cs', 'dz', 'gy', 'ly', 'ny', 'sz', 'ty', 'zs'];
