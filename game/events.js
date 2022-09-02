@@ -52,7 +52,8 @@ async function OnMessage(message, client) {
             message.reply({ content: validationRespone.message, ephemeral: true })
 
             if (query.dataValues.mistakes === query.dataValues.mistakesAllowed) {
-                await client.collectors.get(message.channel.id).stop();
+                message.react('❌');
+                Reset(message.channel, client);
                 return;
             }
             console.log(await client.sequelize.models.Channel.increment({ mistakes: 1}, { where: { id: message.channel.id }}));
@@ -83,3 +84,64 @@ async function OnMessage(message, client) {
         console.log(error);
     }
 }
+
+async function Reset(channel, client) {
+    const query_score = await client.sequelize.models.Word.findOne({
+        attributes: [[client.sequelize.fn('COUNT', client.sequelize.col('id')), 'n_id'],],
+        where: {
+            channel: channel.id,
+        },
+    });
+    
+    const channel_query = await client.sequelize.models.Channel.findOne({
+            where: {
+                id: channel.id,
+            },
+        });
+    
+    await client.sequelize.models.Word.destroy({
+			where: {
+				channel: channel.id,
+			},
+		});
+    
+    await client.sequelize.models.Channel.update({ 
+        mistakes: 0,
+        nextchars: '[]',
+        lastAuthor: '',
+        score: 0
+    }, {
+        where: {
+            id: channel.id,
+        }
+    });
+    const score = query_score.dataValues.n_id;
+    const high_score = channel_query.dataValues.highscore;
+    
+    if (score > high_score) {
+        await client.sequelize.models.Channel.update({ highscore: score}, {
+			where: {
+				id: channel.id,
+			}
+		});
+        var changed_highscore = true;
+    } else {
+        var changed_highscore = false;
+    }
+    
+    const resetEmbed = new EmbedBuilder()
+        .setColor(0xed1c24)
+        .setTitle('You have made too many mistakes!')
+        .setDescription(`The game has been restarted! Have fun!`);
+        if (changed_highscore) {
+            resetEmbed.addFields({ name: 'Your final score', value: `🥳 Congratulations! 🥳 You've just set a new high score! Your score is ${score}, which is higher then the previous high score of ${high_score}.`});
+        } else {
+            resetEmbed.addFields({ name: 'Your final score', value: `Your final score is ${score}. Your high score is ${high_score}.`});
+        }    
+        await client.channels.cache.get(channel.id).send( { embeds: [resetEmbed]});
+
+    OnStart(channel, client);
+    await client.collectors.get(channel.id).stop();
+    await client.collectors.delete(channel.id);
+}
+

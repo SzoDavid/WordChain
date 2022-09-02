@@ -9,6 +9,12 @@ async function Remove(channelId, client) {
 				id: channelId,
 			},
 		});
+		
+		await client.sequelize.models.Word.destroy({
+			where: {
+				channel: channelId,
+			},
+		});
 
 		client.collectors.get(channelId).stop();
 		client.collectors.delete(channelId);
