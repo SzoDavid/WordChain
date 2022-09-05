@@ -1,0 +1,18 @@
+services:
+  wordchain:
+    build:
+        context: ./
+        dockerfile: ./Dockerfile
+    restart: always
+    volumes:
+        - ./old_commands:/app/old_commmands
+        - ./commands:/app/commands
+        - ./database:/app/database
+        - ./events:/app/events
+        - ./game:/app/game
+        - ./index.js:/app/index.js
+        - ./deploy-commands.js:/app/deploy-commands.js
+        - ./:/app/output/
+    env_file:
+        - .env
+
