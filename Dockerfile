@@ -1,12 +1,12 @@
 FROM node:18-alpine
 
-COPY package.json /app/package.json
-COPY package-lock.json /app/package-lock.json
-COPY entrypoint.sh /app/entrypoint.sh
+COPY package*.json /app/
+COPY entrypoint.sh /app/
 
 WORKDIR "/app"
 
-RUN npm install;
+RUN apk add --no-cache python3 make g++; \
+npm install;
 
 WORKDIR "/app/output"
 
