@@ -133,15 +133,17 @@ async function Reset(channel, client) {
         .setColor(0xed1c24)
         .setTitle('You have made too many mistakes!')
         .setDescription(`The game has been restarted! Have fun!`);
-        if (changed_highscore) {
-            resetEmbed.addFields({ name: 'Your final score', value: `🥳 Congratulations! 🥳 You've just set a new high score! Your score is ${score}, which is higher then the previous high score of ${high_score}.`});
+        if (high_score === 0) {
+            resetEmbed.addFields({ name: 'Score', value: `The score of the first game in this channel is ${score}.`});
+        }
+        else if (changed_highscore) {
+            resetEmbed.addFields({ name: 'Score', value: `🥳 Congratulations! 🥳 You've just set a new high score! The score is ${score}, which is higher then the previous high score of ${high_score} in this channel.`});
         } else {
-            resetEmbed.addFields({ name: 'Your final score', value: `Your final score is ${score}. Your high score is ${high_score}.`});
+            resetEmbed.addFields({ name: 'Score', value: `This game's score is ${score}. The high score in this channel is ${high_score}, try to beat it!`});
         }    
         await client.channels.cache.get(channel.id).send( { embeds: [resetEmbed]});
 
-    OnStart(channel, client);
     await client.collectors.get(channel.id).stop();
     await client.collectors.delete(channel.id);
+    OnStart(channel, client);
 }
-
