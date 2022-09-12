@@ -10,5 +10,7 @@ npm install;
 
 WORKDIR "/app/output"
 
+USER 1000:1000
+
 CMD ["/bin/sh", "/app/entrypoint.sh"]
 # CMD ["/bin/sh"]
