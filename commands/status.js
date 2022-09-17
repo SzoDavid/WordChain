@@ -31,10 +31,18 @@ module.exports = {
         } else {
             const status = await gamestatus.GetBotStatus(interaction.guildId, client);
 
-            statusEmbed.addFields(
-                { name: 'Number of active channels', value: `${status.numChannels}` },
-                { name: 'In this server', value: `${status.channels}` },
-            );
+            if (status.channels == '') {
+                statusEmbed.addFields(
+                    { name: '***HINT***', value: 'You can setup this bot using the `/set_channel` command.\n Ask a server moderator to do it.' },
+                    { name: 'Number of active channels', value: `${status.numChannels}` },
+                    { name: 'In this server', value: '0' },
+                )
+            } else {
+                statusEmbed.addFields(
+                    { name: 'Number of active channels', value: `${status.numChannels}` },
+                    { name: 'In this server', value: `${status.channels}` },
+                );
+            }
         }
 
 		await interaction.reply({ embeds: [statusEmbed] });
